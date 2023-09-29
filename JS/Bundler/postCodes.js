@@ -26,6 +26,8 @@ import { taboraRegion } from "../Modules/Tabora.js";
 import { tangaRegion } from "../Modules/Tanga.js";
 import { regions } from "../Modules/regions.js";
 
+updateRegions();
+
 const regionDrop=document.getElementById("region");
 regionDrop.addEventListener("change", updateDistricts);
 
@@ -114,12 +116,14 @@ function updateRegions() {
     const wardDropdown=document.getElementById("ward");
     const villageDropdown=document.getElementById("village");
     const streetDropdown=document.getElementById("street");
+    // const postcode = document.getElementById("postcode");
 
     //Clear districts, wards, villages and streets Dropdowns
     districtDropdown.innerHTML="";
     wardDropdown.innerHTML="";
     villageDropdown.innerHTML="";
     streetDropdown.innerHTML="";
+    // postcode.innerHTML="";
 
 
     //Get the Value of the Region Being selected
@@ -155,12 +159,14 @@ function updateDistricts() {
     const wardDropdown = document.getElementById("ward");
     const villageDropdown = document.getElementById("village");
     const streetDropdown = document.getElementById("street");
+    // const postcode = document.getElementById("postcode");
 
     //Clear district, wards, villages and streets Dropdowns
     districtDropdown.innerHTML="";
     wardDropdown.innerHTML = "";
     villageDropdown.innerHTML = "";
     streetDropdown.innerHTML = "";
+    // postcode.innerHTML="";
 
 
     //Get the Value of the Region Being selected
@@ -203,12 +209,14 @@ function updateWards() {
         const wardDropdown = document.getElementById("ward");
         const villageDropdown = document.getElementById("village");
         const streetDropdown = document.getElementById("street");
+    // const postcode = document.getElementById("postcode");
 
         //Clear district, wards, villages and streets Dropdowns
         // districtDropdown.innerHTML = "";
         wardDropdown.innerHTML = "";
         villageDropdown.innerHTML = "";
         streetDropdown.innerHTML = "";
+        // postcode.innerHTML="";
 
 
         //Get the Value of the Region Being selected
@@ -252,12 +260,14 @@ function updateVillages() {
     const wardDropdown = document.getElementById("ward");
     const villageDropdown = document.getElementById("village");
     const streetDropdown = document.getElementById("street");
+    // const postcode = document.getElementById("postcode");
 
     //Clear district, wards, villages and streets Dropdowns
     // districtDropdown.innerHTML = "";
     // wardDropdown.innerHTML = "";
     villageDropdown.innerHTML = "";
     streetDropdown.innerHTML = "";
+    // postcode.innerHTML="";
 
 
     //Get the Value of the Region Being selected
@@ -292,12 +302,18 @@ function updateVillages() {
         villageDropdown.appendChild(option);
     });
 
- 
+ const isEqual=checkStreets();
+//  console.log(`Are Villages Sames as Streets?
+//                     ${isEqual}`);
 
 }
 
 function updateStreets() {
 
+const hasSameStreets=checkStreets();
+
+if(hasSameStreets){
+    
     //Get Reference to the Elements in the Document
 
     const regionDropdown = document.getElementById("region");
@@ -305,6 +321,50 @@ function updateStreets() {
     const wardDropdown = document.getElementById("ward");
     const villageDropdown = document.getElementById("village");
     const streetDropdown = document.getElementById("street");
+    // const postcode=document.getElementById("postcode");
+
+    //Clear district, wards, villages and streets Dropdowns
+    // districtDropdown.innerHTML = "";
+    // wardDropdown.innerHTML = "";
+    // villageDropdown.innerHTML = "";
+    streetDropdown.innerHTML = "";
+    // postcode.innerHTML="";
+
+
+    //Get the Value of the Region Being selected
+    const selectedRegion = regionDropdown.value.trim();
+    const selectedDistrict = districtDropdown.value.trim();
+    const selectedWard = wardDropdown.value.trim();
+    const selectedVillage = villageDropdown.value.trim();
+
+
+    //Add Directly the Value of the Village
+    const defaultSelectedstreet = document.createElement("option");
+    defaultSelectedstreet.value = selectedVillage;
+    defaultSelectedstreet.text = selectedVillage.toUpperCase();
+    // defaultSelectedstreet.disabled = true;
+    // defaultSelectedstreet.defaultSelected = true;
+    streetDropdown.appendChild(defaultSelectedstreet);
+
+    const streetChoose = search().streetsOf(selectedRegion, selectedDistrict, selectedWard, selectedVillage);
+
+    // postcode.value=streetChoose[0].streetPostCode;
+
+    
+
+
+}
+
+
+else{
+    //Get Reference to the Elements in the Document
+
+    const regionDropdown = document.getElementById("region");
+    const districtDropdown = document.getElementById("district");
+    const wardDropdown = document.getElementById("ward");
+    const villageDropdown = document.getElementById("village");
+    const streetDropdown = document.getElementById("street");
+    // const postcode = document.getElementById("postcode");
 
     //Clear district, wards, villages and streets Dropdowns
     // districtDropdown.innerHTML = "";
@@ -317,7 +377,7 @@ function updateStreets() {
     const selectedRegion = regionDropdown.value.trim();
     const selectedDistrict = districtDropdown.value.trim();
     const selectedWard = wardDropdown.value.trim();
-    const selectedVillage=villageDropdown.value.trim();
+    const selectedVillage = villageDropdown.value.trim();
 
 
     //Create the Header of the Dropdown ie
@@ -332,7 +392,7 @@ function updateStreets() {
     //Add  other Rows on the DropDowns
 
 
-    const streetChoose = search().streetsOf(selectedRegion, selectedDistrict, selectedWard,selectedVillage);
+    const streetChoose = search().streetsOf(selectedRegion, selectedDistrict, selectedWard, selectedVillage);
     // console.log("Region Selected: " + selectedRegion);
     // console.log("Selected District: " + selectedDistrict);
     // console.log("Selected Ward: " + selectedWard);
@@ -347,65 +407,80 @@ function updateStreets() {
         streetDropdown.appendChild(option);
     });
 
+    postcode.value = streetChoose[0].streetPostCode;
 }
+
+}
+
 
 function checkStreets() {
+    const region=document.getElementById("region");
+    const district=document.getElementById("district");
+    const ward=document.getElementById("ward");
+    const village=document.getElementById("village");
 
-    const regionDropdown = document.getElementById("region");
-    const districtDropdown = document.getElementById("district");
-    const wardDropdown = document.getElementById("ward");
-    const villageDropdown = document.getElementById("village");
-    const streetDropdown = document.getElementById("street");
+    const regionValue=region.value;
+    const districtValue=district.value;
+    const wardValue=ward.value;
+    const villageValue=village.value;
 
-    //Get the Value of the Region Being selected
-    const selectedRegion = regionDropdown.value.trim();
-    const selectedDistrict = districtDropdown.value.trim();
-    const selectedWard = wardDropdown.value.trim();
-    const selectedVillage = villageDropdown.value.trim();
-    const selectedStreet=streetDropdown.value.trim();
+    const villageList=search().villagesOf(regionValue,districtValue,wardValue);
 
-    console.log(selectedVillage)
-    console.log(Boolean(selectedVillage));
+    // console.log(villageList);
 
-   if(Boolean(selectedVillage)===false){
-       const villageChoose = search().villagesOf(selectedRegion, selectedDistrict, selectedWard);
-       
-       
-    //    const streetChoose = search().streetsOf(selectedRegion, selectedDistrict, selectedWard, selectedVillage);
+    //Create Array of Villages
+    let villageArray = [];
+   villageList.forEach(function(value){
+        villageArray.push(value.villageName);
+    });
 
-    //    const streetArray = Object.values(streetChoose);
-       const villageArray = Object.values(villageChoose);
+    // console.log("After Averything, this is the Array");
+    // console.log(villageArray);
 
-       const streetChoose =villageChoose.streets;
+    let streetArray=[];
+    const n=villageList.length-1;
 
-       //    console.log(streetArray);
-       console.log("========================");
-       console.log(villageArray);
-       console.log(streetChoose);
-       console.log("========================");
-    //    const AreEqual = JSON.stringify((streetArray)) === JSON.stringify(villageArray);
-    //    console.log("Are Equal?: " + AreEqual);
-   }
-   else{
-    console.log("MAISHA HAYA MAGUMU MNO!");
-       //    const streetChoose = search().streetsOf(selectedRegion, selectedDistrict, selectedWard, selectedVillage);
+    villageList[n].streets.forEach(function(st){
+        streetArray.push(st.StreetName);
+    });
 
-       //    const streetArray = Object.values(streetChoose);
-       const villageArray = Object.values(villageChoose);
-       const streetChoose=Object.values(villageChoose.streets);
-
-       //    console.log(streetArray);
-       console.log("========================");
-       console.log(villageArray);
-       console.log(streetChoose);
-       console.log("========================");
-
-       //    const AreEqual = JSON.stringify((streetArray)) === JSON.stringify(villageArray);
-       //    console.log("Are Equal?: " + AreEqual);
-   }
+    return EqualArrays(villageArray, streetArray);
 
 }
 
+function EqualArrays(array1, array2) {
+
+    const lengthEqual=array1.length===array2.length;
+
+    
+    if(lengthEqual){
+        let counter = 0;
+        for(let index=0; index<array1.length;index++){
+            
+            if(array1[index]===array2[index]){
+                counter++;
+                // console.log(`   ${index+1}: ${array1[index]} === ${array2[index]}`);
+            }
+            else{
+                counter--;
+            }
+        }
+
+        if(counter===array1.length){
+            // console.log("Mambo yako Vizuri sana!")
+            return true;
+        }
+        else{
+            // console.log("Imefika huku kabbisaa, baada ya Urefu kuwa sawa");
+            return false;
+        }
+    }
+    else {
+        // console.log("Imechepuka mapemaaaaa!");
+        return false;
+    }
+
+    
+}
 
 
-updateRegions();
