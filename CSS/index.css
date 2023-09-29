@@ -1,0 +1,9 @@
+@import url("base.css");
+
+option{
+    cursor: pointer;
+}
+
+body{
+    margin-bottom: 500px;
+}
